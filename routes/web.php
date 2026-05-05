@@ -32,6 +32,10 @@ Route::middleware(['auth', 'role:superadmin'])->group(function () {
     Route::get('/admin/users', function () {
         return view('admin.users');
     })->name('admin.users');
+
+    Route::get('/admin/patients', function () {
+        return view('admin.patients');
+    })->name('admin.patients');
 });
 
 Route::middleware(['auth', 'role:staff,superadmin'])->group(function () {

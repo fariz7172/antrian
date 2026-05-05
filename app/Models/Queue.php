@@ -15,9 +15,15 @@ class Queue extends Model
         'number',
         'ticket_number',
         'status',
+        'patient_id',
         'called_at',
         'finished_at',
     ];
+
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
 
     protected $casts = [
         'called_at' => 'datetime',

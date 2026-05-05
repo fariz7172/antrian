@@ -61,13 +61,15 @@ new class extends Component {
 <div wire:poll.3s class="display-container">
     <style>
         .display-container {
-            height: 100vh;
+            min-height: 100vh;
             background: linear-gradient(135deg, #346739 0%, #1a2e1c 100%);
             padding: 1.5rem;
+            padding-bottom: 7rem; /* Memberi ruang ekstra untuk footer */
             color: white;
             display: flex;
             flex-direction: column;
             box-sizing: border-box;
+            overflow-x: hidden;
         }
         .display-header {
             display: flex;
@@ -83,7 +85,7 @@ new class extends Component {
             grid-template-columns: 1fr 1.5fr;
             gap: 1.5rem;
             flex-grow: 1;
-            min-height: 0; /* Penting untuk flex item agar bisa shrink */
+            min-height: 0;
         }
         
         /* Left: Latest Call Focus */
@@ -101,7 +103,7 @@ new class extends Component {
             text-align: center;
         }
         .latest-ticket {
-            font-size: clamp(4rem, 12vw, 9rem);
+            font-size: clamp(3rem, 15vw, 9rem);
             font-weight: 900;
             color: #91D06C;
             text-shadow: 0 10px 30px rgba(145, 208, 108, 0.3);
@@ -112,7 +114,7 @@ new class extends Component {
         /* Right: All Polis List */
         .polis-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 1rem;
             align-content: start;
             overflow-y: auto;
@@ -126,7 +128,6 @@ new class extends Component {
         /* Skipped Section */
         .skipped-section {
             margin-top: 1.5rem;
-            margin-bottom: 4rem; /* Memberi ruang untuk footer fixed */
             background: rgba(244, 67, 54, 0.15);
             border: 2px solid rgba(244, 67, 54, 0.4);
             border-radius: 20px;
@@ -148,7 +149,7 @@ new class extends Component {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
-            font-size: 1.5rem;
+            font-size: clamp(1rem, 4vw, 1.5rem);
             font-weight: 700;
             color: #ffcdd2;
         }
@@ -156,13 +157,14 @@ new class extends Component {
         .poli-display-card {
             background: white;
             border-radius: 25px;
-            padding: 1.5rem 2rem;
+            padding: 1.2rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: #346739;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
             border: 4px solid transparent;
+            transition: all 0.3s ease;
         }
         .poli-display-card.active {
             border-color: #91D06C;
@@ -173,8 +175,8 @@ new class extends Component {
             70% { box-shadow: 0 0 0 15px rgba(145, 208, 108, 0); }
             100% { box-shadow: 0 0 0 0 rgba(145, 208, 108, 0); }
         }
-        .poli-info h3 { font-size: 1.2rem; margin: 0; opacity: 0.8; }
-        .poli-number { font-size: 2.5rem; font-weight: 900; color: #346739; }
+        .poli-info h3 { font-size: 1.1rem; margin: 0; opacity: 0.8; }
+        .poli-number { font-size: 2.2rem; font-weight: 900; color: #346739; }
 
         .footer-info {
             position: fixed;
@@ -185,45 +187,79 @@ new class extends Component {
             font-weight: 700;
             display: flex;
             justify-content: space-between;
-            font-size: 1rem;
+            font-size: 0.9rem;
             z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
         }
 
         /* Responsive Breakpoints */
         @media (max-width: 1200px) {
-            .latest-ticket { font-size: 8rem; }
+            .latest-ticket { font-size: clamp(3rem, 12vw, 7rem); }
+            .poli-number { font-size: 2rem; }
         }
 
         @media (max-width: 992px) {
+            .display-container {
+                padding: 1rem;
+                padding-bottom: 8rem;
+                height: auto;
+                min-height: 100vh;
+            }
             .main-grid {
                 grid-template-columns: 1fr;
-                height: auto;
-                padding-bottom: 80px;
+                gap: 1.5rem;
             }
             .latest-call-box {
-                margin-bottom: 1rem;
-                padding: 3rem;
+                padding: 2rem;
+                border-radius: 25px;
             }
-            .display-container {
-                overflow-y: auto;
-                height: 100vh;
+            .polis-grid {
+                overflow-y: visible;
+                grid-template-columns: 1fr; /* Force 1 column for tablet if it gets narrow */
+            }
+            .skipped-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+                padding: 1rem;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (min-width: 641px) and (max-width: 992px) {
+            .polis-grid {
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for tablet */
+            }
+        }
+
+        @media (max-width: 640px) {
             .display-header {
                 flex-direction: column;
                 text-align: center;
-                gap: 15px;
+                gap: 1rem;
+                padding-bottom: 0.5rem;
             }
+            .display-header h1 { font-size: 1.4rem !important; }
+            #clock { font-size: 1.8rem !important; }
+            
+            .latest-ticket { font-size: 4.5rem; }
+            .latest-call-box h3 { font-size: 1.6rem !important; }
+            .latest-call-box { padding: 1.5rem; }
+            
             .footer-info {
                 flex-direction: column;
                 text-align: center;
                 gap: 5px;
-                font-size: 0.8rem;
+                padding: 0.6rem 1rem;
+                font-size: 0.75rem;
             }
-            .latest-ticket { font-size: 6rem; }
-            .poli-number { font-size: 2rem; }
+            .polis-grid {
+                grid-template-columns: 1fr; /* Strict 1 column for mobile */
+            }
+            .poli-display-card {
+                padding: 1rem;
+                border-radius: 20px;
+            }
+            .poli-number { font-size: 1.8rem; }
         }
     </style>
 

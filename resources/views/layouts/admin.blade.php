@@ -51,6 +51,12 @@
                         <span>Manajemen Staff</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ url('/admin/patients') }}" class="nav-link {{ request()->is('admin/patients*') ? 'active' : '' }}">
+                        <i class="fas fa-file-medical"></i>
+                        <span>Rekam Medis</span>
+                    </a>
+                </li>
                 @endif
 
                 <li class="nav-item">
@@ -86,17 +92,25 @@
             </div>
         </aside>
 
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
         <!-- Main Content -->
         <main class="main-content">
             <!-- Topbar -->
             <header class="topbar">
-                <div class="page-title">
-                    <h1>@yield('header_title', 'Dashboard Overview')</h1>
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <button class="toggle-sidebar" id="toggleSidebar">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="page-title">
+                        <h1>@yield('header_title', 'Dashboard Overview')</h1>
+                    </div>
                 </div>
                 
                 <div class="topbar-actions" style="display: flex; align-items: center; gap: 20px;">
                     <div class="user-profile">
-                        <div class="user-info" style="text-align: right; line-height: 1.2;">
+                        <div class="user-info d-none-mobile" style="text-align: right; line-height: 1.2;">
                             <div style="font-weight: 700; color: var(--accent-color);">{{ auth()->user()->name }}</div>
                             <div style="font-size: 0.75rem; color: var(--text-muted);">{{ ucfirst(auth()->user()->role) }}</div>
                         </div>
@@ -120,7 +134,21 @@
     @livewireScripts
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Admin Dashboard Ready');
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.getElementById('toggleSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+
+            if (toggleBtn && sidebar && overlay) {
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                    overlay.classList.toggle('active');
+                });
+
+                overlay.addEventListener('click', () => {
+                    sidebar.classList.remove('active');
+                    overlay.classList.remove('active');
+                });
+            }
         });
     </script>
     @yield('scripts')
