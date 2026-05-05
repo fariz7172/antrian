@@ -21,7 +21,14 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'poli_id',
     ];
+
+    public function poli()
+    {
+        return $this->belongsTo(Poli::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.

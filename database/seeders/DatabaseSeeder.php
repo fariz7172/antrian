@@ -12,11 +12,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call([
+            PoliSeeder::class,
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        // Create Superadmin
+        \App\Models\User::create([
+            'name' => 'Super Admin',
+            'email' => 'admin@gmail.com',
+            'password' => bcrypt('password'),
+            'role' => 'superadmin',
+        ]);
+
+        // Create Staff for each Poli
+        $polis = \App\Models\Poli::all();
+        foreach ($polis as $poli) {
+            \App\Models\User::create([
+                'name' => 'Staff ' . $poli->name,
+                'email' => strtolower(str_replace(' ', '', $poli->name)) . '@staff.com',
+                'password' => bcrypt('password'),
+                'role' => 'staff',
+                'poli_id' => $poli->id,
+            ]);
+        }
     }
 }

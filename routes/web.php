@@ -14,5 +14,37 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    if (auth()->check()) {
+        return auth()->user()->role === 'superadmin' ? redirect('/admin') : redirect('/staff');
+    }
+    return redirect('/kiosk');
 });
+
+Route::middleware(['auth', 'role:superadmin'])->group(function () {
+    Route::get('/admin', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    Route::get('/admin/polis', function () {
+        return view('admin.polis');
+    })->name('admin.polis');
+
+    Route::get('/admin/users', function () {
+        return view('admin.users');
+    })->name('admin.users');
+});
+
+Route::middleware(['auth', 'role:staff,superadmin'])->group(function () {
+    Route::get('/staff', function () {
+        return view('admin.staff');
+    })->name('staff.dashboard');
+});
+
+Route::view('/kiosk', 'kiosk-page');
+Route::view('/display', 'display-page');
+
+Route::view('profile', 'profile')
+    ->middleware(['auth'])
+    ->name('profile');
+
+require __DIR__.'/auth.php';
